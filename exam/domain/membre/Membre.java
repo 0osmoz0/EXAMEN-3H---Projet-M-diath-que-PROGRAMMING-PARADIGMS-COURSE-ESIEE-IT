@@ -99,3 +99,4 @@ public final class Membre {
         return Long.hashCode(id);
     }
 }
+

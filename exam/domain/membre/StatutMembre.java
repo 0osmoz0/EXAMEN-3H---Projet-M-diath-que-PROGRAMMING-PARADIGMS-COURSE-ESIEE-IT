@@ -4,3 +4,4 @@ public enum StatutMembre {
     ACTIF,
     INACTIF;
 }
+

@@ -118,3 +118,4 @@ public final class Emprunt {
         return Objects.hash(id);
     }
 }
+

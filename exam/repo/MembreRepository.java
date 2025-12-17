@@ -25,7 +25,7 @@ public interface MembreRepository {
     /**
      * Retourne la liste de tous les membres enregistrés.
      *
-     * @return liste de tous les membres (jamais null)
+     * @return liste de tous les membres (jamais null, non modifiable)
      */
     List<Membre> findAll();
 
@@ -33,10 +33,15 @@ public interface MembreRepository {
      * Sauvegarde un membre dans le repository.
      * <p>
      * Si un membre avec le même identifiant existe déjà,
-     * il est remplacé.
+     * il est remplacé par la nouvelle valeur.
+     * <p>
+     * <b>Comportement de remplacement :</b> Si l'identifiant existe déjà,
+     * l'ancienne valeur est complètement remplacée par la nouvelle.
+     * Aucune fusion ou mise à jour partielle n'est effectuée.
      *
      * @param membre membre à sauvegarder (non null)
      * @throws IllegalArgumentException si le membre est null
      */
     void save(Membre membre);
 }
+

@@ -29,18 +29,30 @@ public interface OeuvreRepository {
     /**
      * Retourne la liste de toutes les œuvres enregistrées.
      *
-     * @return liste de toutes les œuvres (jamais null)
+     * @return liste de toutes les œuvres (jamais null, non modifiable)
      */
     List<Oeuvre> findAll();
+
+    /**
+     * Retourne uniquement les œuvres disponibles (disponible=true).
+     *
+     * @return liste des œuvres disponibles (jamais null, non modifiable)
+     */
+    List<Oeuvre> findDisponibles();
 
     /**
      * Sauvegarde une œuvre dans le repository.
      * <p>
      * Si une œuvre avec le même identifiant existe déjà,
-     * elle est remplacée.
+     * elle est remplacée par la nouvelle valeur.
+     * <p>
+     * <b>Comportement de remplacement :</b> Si l'identifiant existe déjà,
+     * l'ancienne valeur est complètement remplacée par la nouvelle.
+     * Aucune fusion ou mise à jour partielle n'est effectuée.
      *
      * @param oeuvre œuvre à sauvegarder (non null)
      * @throws IllegalArgumentException si l'œuvre est null
      */
     void save(Oeuvre oeuvre);
 }
+

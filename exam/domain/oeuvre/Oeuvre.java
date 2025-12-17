@@ -111,3 +111,4 @@ public abstract class Oeuvre {
         return this.getClass().getSimpleName() + "{id=" + id + ", titre='" + titre + "'}";
     }
 }
+
