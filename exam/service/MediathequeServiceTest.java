@@ -333,34 +333,30 @@ class MediathequeServiceTest {
     // ========== Tests paramétrés ==========
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 5})
-    void emprunter_avecDifferentQuotas_doitRespecterQuota(int quotaMax) {
-        // Arrange : Modifier le quota via réflexion (pour les tests)
-        // Note: Dans un vrai projet, on utiliserait une injection de dépendance
-        // ou une configuration pour le quota. Pour ce test, on simule différents quotas
-        // en créant le nombre exact d'œuvres nécessaires.
-
-        // Arrange : Créer suffisamment d'œuvres pour le quota
-        for (int i = 1; i <= quotaMax + 1; i++) {
+    @ValueSource(ints = {1, 2, 3})
+    void emprunter_avecDifferentQuotas_doitRespecterQuota(int nombreEmprunts) {
+        // Arrange : Créer suffisamment d'œuvres pour le test
+        for (int i = 1; i <= nombreEmprunts + 1; i++) {
             Livre livre = new Livre(10 + i, "Livre " + i, "Auteur " + i, 1000000 + i);
             oeuvreRepository.save(livre);
         }
 
-        // Arrange : Emprunter jusqu'au quota maximum
-        for (int i = 1; i <= quotaMax; i++) {
+        // Arrange : Emprunter jusqu'au nombre spécifié
+        for (int i = 1; i <= nombreEmprunts; i++) {
             long oeuvreId = 10 + i;
             assertDoesNotThrow(() -> service.emprunter(membreActif.getId(), oeuvreId));
         }
 
-        // Act & Assert : Vérifier qu'un emprunt supplémentaire est refusé
-        // (Note: Le quota réel est de 3 selon EmpruntPolicy, donc ce test vérifie
-        // que le système respecte le quota configuré, pas qu'il change dynamiquement)
-        if (quotaMax >= 3) {
-            // Si le quota testé est >= 3 (le quota réel), on doit avoir une exception
+        // Act & Assert : Vérifier qu'un emprunt supplémentaire est refusé si on atteint le quota réel (3)
+        if (nombreEmprunts >= EmpruntPolicy.getQuotaMax()) {
+            // Si on a atteint le quota maximum (3), un emprunt supplémentaire doit être refusé
             assertThrows(
                     IllegalStateException.class,
-                    () -> service.emprunter(membreActif.getId(), 10 + quotaMax + 1)
+                    () -> service.emprunter(membreActif.getId(), 10 + nombreEmprunts + 1)
             );
+        } else {
+            // Si on n'a pas atteint le quota, un emprunt supplémentaire doit être possible
+            assertDoesNotThrow(() -> service.emprunter(membreActif.getId(), 10 + nombreEmprunts + 1));
         }
     }
 
